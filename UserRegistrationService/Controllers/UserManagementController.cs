@@ -8,6 +8,8 @@ using UserManagementService.Interface;
 
 namespace UserManagementService.Controllers
 {
+    [ApiController]
+    [Route("api/UserManagement")]
     public class UserManagementController : Controller
     {
         private readonly IRegistration _user;
@@ -258,7 +260,7 @@ namespace UserManagementService.Controllers
                 }
                 else
                 {
-                    return StatusCode(500, $"An error occurred while processing the login request: {ex.Message}");
+                    return BadRequest();
 
                 }
             }
@@ -280,7 +282,7 @@ namespace UserManagementService.Controllers
             {
                 if (ex is SqlException)
                 {
-                    return StatusCode(500, new ResponseModel<string>
+                    return BadRequest (new ResponseModel<string>
                     {
                         Success = false,
                         Message = "An error occurred while retrieving Users from the database.",
@@ -289,7 +291,38 @@ namespace UserManagementService.Controllers
                 }
                 else
                 {
-                    return StatusCode(500, new ResponseModel<string>
+                    return BadRequest (new ResponseModel<string>
+                    {
+                        Success = false,
+                        Message = "An error occurred.",
+                        Data = null
+                    });
+                }
+            }
+        }
+
+        [HttpGet("userid")]
+        public async Task<IActionResult> GetById(int userid)
+        {
+            try
+            {
+                var details = await _user.GetById(userid);
+                return Ok(details);
+            }
+            catch (Exception ex)
+            {
+                if (ex is SqlException)
+                {
+                    return BadRequest(new ResponseModel<string>
+                    {
+                        Success = false,
+                        Message = "An error occurred while retrieving Users from the database.",
+                        Data = null
+                    });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<string>
                     {
                         Success = false,
                         Message = "An error occurred.",

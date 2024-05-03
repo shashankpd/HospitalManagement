@@ -11,6 +11,8 @@ namespace UserManagementService.Interface
         public Task<string> UserLogin(string email, string password, IConfiguration configuration);
 
         public Task<IEnumerable<User>> GetUsersDetails();
+        public Task<User> GetById(int userid);
+
 
     }
 }

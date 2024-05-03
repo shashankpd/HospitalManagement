@@ -126,7 +126,7 @@ namespace UserManagementService.Service
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                new Claim(ClaimTypes.NameIdentifier, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                 new Claim("UserId", user.UserID.ToString()),
                  new Claim(ClaimTypes.Role, user.Role) 
                     // Add more claims as needed
@@ -159,6 +159,26 @@ namespace UserManagementService.Service
                 throw;
             }
         }
+
+        public async Task<User> GetById(int userid)
+        {
+            try
+            {
+                var query = "SELECT * FROM Users where UserID=@userid ";
+                using (var connection = _context.CreateConnection())
+                {
+                    var users = await connection.QueryFirstOrDefaultAsync<User>(query, new { userid = userid });
+                    return users;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception message to the console or handle it as per your requirement
+                Console.WriteLine($"Error occurred while getting registration details: {ex.Message}");
+                throw;
+            }
+        }
+
 
 
 
